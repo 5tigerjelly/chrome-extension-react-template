@@ -1,10 +1,30 @@
 {
-    "manifest_version": 3,
-    "name": "React Chrome Extension",
-    "version": "1.0.0",
-    "description": "A simple React app as a Chrome extension",
-    "action": {
-      "default_popup": "index.html"
-    },
-    "permissions": []
-  }
+  "manifest_version": 3,
+  "name": "React Chrome Extension",
+  "version": "1.0.0",
+  "description": "A simple React app as a Chrome extension",
+  "action": {
+    "default_title": "Open Side Panel",
+    "default_popup": "index.html"
+  },
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "permissions": [
+    "sidePanel"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "highlight.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}
