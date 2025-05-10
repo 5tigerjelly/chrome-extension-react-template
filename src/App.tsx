@@ -5,12 +5,9 @@ function App() {
   const [selectedText, setSelectedText] = useState("");
 
   useEffect(() => {
-    console.log("running use Effect")
-    chrome.runtime.onMessage.addListener((message) => {
-      console.log("message received")
-      if (message.type === "TEXT_SELECTED") {
-        console.log(message.text)
-        setSelectedText(message.text);
+    chrome.storage.local.get("selectedText", (result) => {
+      if (result.selectedText) {
+        setSelectedText(result.selectedText);
       }
     });
   }, []);

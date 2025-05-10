@@ -11,20 +11,14 @@
     "default_path": "index.html"
   },
   "permissions": [
-    "sidePanel"
+    "storage",
+    "sidePanel",
+    "contextMenus"
   ],
   "background": {
     "service_worker": "background.js"
   },
-  "content_scripts": [
-    {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "highlight.js"
-      ],
-      "run_at": "document_idle"
-    }
-  ]
+  "icons": {
+    "16": "assets/fact_icon.png"
+  }
 }
