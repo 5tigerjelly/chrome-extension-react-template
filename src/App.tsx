@@ -4,13 +4,41 @@ import './App.css'
 function App() {
   const [selectedText, setSelectedText] = useState("");
 
+  const [relation, setRelation] = useState("");
+  const [extractedQuote, setExtractedQuote] = useState("");
+  const [scores, setScores] = useState<{ supports: number; contradicts: number; unclear: number } | null>(null);
+
   useEffect(() => {
     chrome.storage.local.get("selectedText", (result) => {
       if (result.selectedText) {
         setSelectedText(result.selectedText);
+        getConclusion(result.selectedText); // call notebook
       }
     });
   }, []);
+
+
+  const getConclusion = async (text: string) => {
+    try {
+      const response = await fetch("http://localhost:8888/get_conclusion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ quote: text })
+      });
+
+      const data = await response.json();
+
+      setRelation(data.relation || "unknown");
+      setExtractedQuote(data.extractedQuote || "");
+      setScores(data.scores || null);
+    } catch (error) {
+      console.error("Error fetching conclusion:", error);
+      setRelation("error");
+    }
+  };
+
 
   return (
     <>
@@ -38,6 +66,19 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p> */}
+
+      {relation && <p><strong>Conclusion:</strong> {relation}</p>}
+      {extractedQuote && <p><strong>Extracted Sentence:</strong> “{extractedQuote}”</p>}
+      {scores && (
+        <div>
+          <strong>Probabilities:</strong>
+          <ul>
+            <li>Supports: {scores.supports}</li>
+            <li>Contradicts: {scores.contradicts}</li>
+            <li>Unclear: {scores.unclear}</li>
+          </ul>
+        </div> )}
+
     </>
   )
 }
