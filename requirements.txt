@@ -1,0 +1,6 @@
+flask
+flask-cors
+torch
+transformers
+numpy==1.24.4
+spacy

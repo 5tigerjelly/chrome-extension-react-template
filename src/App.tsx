@@ -3,20 +3,43 @@ import './App.css'
 
 function App() {
   const [selectedText, setSelectedText] = useState("");
-
+  const [searchQuery, setSearchQuery] = useState("");
   const [relation, setRelation] = useState("");
   const [extractedQuote, setExtractedQuote] = useState("");
   const [scores, setScores] = useState<{ supports: number; contradicts: number; unclear: number } | null>(null);
 
   useEffect(() => {
     chrome.storage.local.get("selectedText", (result) => {
+      console.log(result.selectedText);
       if (result.selectedText) {
-        setSelectedText(result.selectedText);
-        getConclusion(result.selectedText); // call notebook
+        const text = result.selectedText;
+        setSelectedText(text);
+        getQuery(text);  // call notebook
+        getConclusion(text); // call notebook
       }
     });
   }, []);
 
+
+  const getQuery = async (text: string) => {
+    try {
+      const response = await fetch("http://localhost:8888/generate_query", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ text })
+      });
+  
+      const data = await response.json();
+      const query = data.query || "";
+      setSearchQuery(query);
+      console.log("Generated Query:", query);
+    } catch (error) {
+      console.error("Error generating query:", error);
+    }
+  };
+  
 
   const getConclusion = async (text: string) => {
     try {
@@ -55,6 +78,7 @@ function App() {
         Start Read
       </button>
       {selectedText && <p>{selectedText}</p>}
+      {searchQuery && <p>Search Query: {searchQuery}</p>}
       {/* <div className="card">
         <button onClick={() => setCount((count) => count + 1)}>
           count is {count}

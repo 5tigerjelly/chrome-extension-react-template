@@ -1,10 +1,22 @@
+Setup virtual environment and download dependencies.
+```sh
+./setup.sh
+```
+
 Run the llm server in the local terminal.
 This should work on Macbooks that have the MPS GPU.
 ```sh
 python run_llm_server.py
 ```
 
-In another terminal, test that the get_conclusion.py is working. 
+In another terminal, test that generate_query.py is working. 
+```sh
+curl -X POST http://localhost:8888/generate_query \
+     -H "Content-Type: application/json" \
+     -d '{"highlighted_text": "The UN reported a surge in climate-related refugee displacement in 2024."}'
+```
+
+Test that the get_conclusion.py is working. 
 ```sh
 curl -X POST http://localhost:8888/get_conclusion \
      -H "Content-Type: application/json" \

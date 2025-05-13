@@ -1,9 +1,25 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from src.get_conclusion.get_conclusion import get_fact_check_result
+from src.query_generator.generate_query import generate_clean_query
 
 app = Flask(__name__)
 CORS(app)
+
+
+@app.route("/generate_query", methods=["POST"])
+def handle_generate_query():
+    text = request.json.get("text", "")
+
+    if not text:
+        return jsonify({"error": "Missing text"}), 400
+
+    try:
+        query = generate_clean_query(text)
+        return jsonify({ "query": query })
+    except Exception as e:
+        return jsonify({ "error": str(e) }), 500
+
 
 @app.route("/get_conclusion", methods=["POST"])
 def handle_request():
@@ -26,6 +42,6 @@ def handle_request():
     except Exception as e:
         return jsonify({ "relation": "error", "extractedQuote": str(e) }), 500
 
+
 if __name__ == "__main__":
     app.run(port=8888)
-

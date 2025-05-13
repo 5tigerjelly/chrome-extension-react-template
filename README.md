@@ -25,6 +25,12 @@ Make sure you have [Node.js](https://nodejs.org/) (version 18+ or 20+) installed
     npm install
     ```
 
+3. Setup LLM server in a virtual environment:
+    ```sh
+    ./setup.sh
+    python run_llm_server.py
+    ```
+
 ## 🏗️ Development
 
 To start the development server:
